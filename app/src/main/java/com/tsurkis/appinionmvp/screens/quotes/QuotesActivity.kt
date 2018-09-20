@@ -1,7 +1,7 @@
 package com.tsurkis.appinionmvp.screens.quotes
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -67,4 +67,6 @@ class QuotesActivity : AppCompatActivity(), QuotesScreenContract.Screen {
         val text = getString(R.string.quotes_screen_time_frame_error_text, timeLeftToMakeNextRequest)
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
+
+    override fun getLifeCycleOwnerInstance() = this
 }

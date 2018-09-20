@@ -2,7 +2,6 @@ package com.tsurkis.appinionmvp.screens.quotes
 
 import com.tsurkis.appinionmvp.application.ThreadManager
 import com.tsurkis.appinionmvp.architecture.base.BasePresenter
-import com.tsurkis.appinionmvp.remoteapi.opinionatedquotes.responseobjects.Quote
 import javax.inject.Inject
 
 class QuotesPresenter @Inject constructor(
@@ -21,6 +20,7 @@ class QuotesPresenter @Inject constructor(
     }
 
     override fun onViewInitialized() {
+        quotesInteractor.bindData(screen.getLifeCycleOwnerInstance(), screen::loadList)
         requestNewData()
     }
 
@@ -31,9 +31,8 @@ class QuotesPresenter @Inject constructor(
         }
     }
 
-    private fun onQuotesRequestSuccess(quotes: List<Quote>) {
+    private fun onQuotesRequestSuccess() {
         threadManager.mainThread.execute {
-            screen.loadList(quotes)
             screen.hideProgressBar()
             screen.showList()
         }

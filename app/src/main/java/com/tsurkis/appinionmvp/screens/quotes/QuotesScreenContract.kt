@@ -1,10 +1,12 @@
 package com.tsurkis.appinionmvp.screens.quotes
 
+import android.arch.lifecycle.LifecycleOwner
+import com.tsurkis.appinionmvp.architecture.base.BaseScreen
 import com.tsurkis.appinionmvp.remoteapi.opinionatedquotes.responseobjects.Quote
 
 interface QuotesScreenContract {
 
-    interface Screen {
+    interface Screen: BaseScreen {
         fun showProgressBar()
         fun hideProgressBar()
 
@@ -23,10 +25,11 @@ interface QuotesScreenContract {
     }
 
     interface Interactor {
+        fun bindData(lifeCycleOwner: LifecycleOwner, newDataBlock: (List<Quote>?) -> (Unit))
 
         fun requestRandomQuotes(
                 requestInTimeFrameBlock: () -> (Unit),
-                successBlock: (List<Quote>) -> (Unit),
+                successBlock: () -> (Unit),
                 failureBlock: (timeLeftToMakeNextRequest: Long) -> (Unit))
     }
 }
