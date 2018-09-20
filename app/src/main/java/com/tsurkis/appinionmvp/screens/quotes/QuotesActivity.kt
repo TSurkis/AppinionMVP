@@ -1,5 +1,6 @@
 package com.tsurkis.appinionmvp.screens.quotes
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -7,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import com.tsurkis.appinionmvp.R
+import com.tsurkis.appinionmvp.application.PresenterFactory
 import com.tsurkis.appinionmvp.remoteapi.opinionatedquotes.responseobjects.Quote
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_quotes.*
@@ -15,7 +17,9 @@ import javax.inject.Inject
 class QuotesActivity : AppCompatActivity(), QuotesScreenContract.Screen {
 
     @Inject
-    lateinit var presenter: QuotesScreenContract.Presenter
+    lateinit var presenterFactory: PresenterFactory
+
+    private lateinit var presenter: QuotesScreenContract.Presenter
 
     private lateinit var quotesAdapter: QuotesAdapter
 
@@ -23,6 +27,9 @@ class QuotesActivity : AppCompatActivity(), QuotesScreenContract.Screen {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quotes)
+
+        presenter = ViewModelProviders.of(this, presenterFactory).get(QuotesPresenter::class.java)
+        presenter.attach(this)
 
         initializeList()
 

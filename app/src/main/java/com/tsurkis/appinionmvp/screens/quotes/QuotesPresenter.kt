@@ -5,10 +5,9 @@ import com.tsurkis.appinionmvp.architecture.base.BasePresenter
 import javax.inject.Inject
 
 class QuotesPresenter @Inject constructor(
-        screen: QuotesScreenContract.Screen,
         private val quotesInteractor: QuotesInteractor,
         private val threadManager: ThreadManager
-) : BasePresenter<QuotesScreenContract.Screen>(screen), QuotesScreenContract.Presenter {
+) : BasePresenter<QuotesScreenContract.Screen>(), QuotesScreenContract.Presenter {
 
     override fun requestNewData() {
         threadManager.backThread.execute {
@@ -20,29 +19,39 @@ class QuotesPresenter @Inject constructor(
     }
 
     override fun onViewInitialized() {
-        quotesInteractor.bindData(screen.getLifeCycleOwnerInstance(), screen::loadList)
-        requestNewData()
+        getScreen()?.let { screen ->
+            quotesInteractor.bindData(screen.getLifeCycleOwnerInstance(), screen::loadList)
+            if (!quotesInteractor.didProvideInitialData()) {
+                requestNewData()
+            }
+        }
     }
 
     private fun onRequestInTimeFrame() {
         threadManager.mainThread.execute {
-            screen.showProgressBar()
-            screen.hideList()
+            getScreen()?.apply {
+                showProgressBar()
+                hideList()
+            }
         }
     }
 
     private fun onQuotesRequestSuccess() {
         threadManager.mainThread.execute {
-            screen.hideProgressBar()
-            screen.showList()
+            getScreen()?.apply {
+                hideProgressBar()
+                showList()
+            }
         }
     }
 
     private fun onQuotesRequestFailure(timeLeftToMakeNextRequest: Long) {
         threadManager.mainThread.execute {
-            screen.hideProgressBar()
-            screen.showList()
-            screen.showTimeFrameError(timeLeftToMakeNextRequest)
+            getScreen()?.apply {
+                hideProgressBar()
+                showList()
+                showTimeFrameError(timeLeftToMakeNextRequest)
+            }
         }
     }
 }

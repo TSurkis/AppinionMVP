@@ -41,6 +41,8 @@ class QuotesInteractor @Inject constructor(
         }
     }
 
+    override fun didProvideInitialData() = lastRequestTimeFrame != 0L
+
     private fun updateTimeFrame() {
         lastRequestTimeFrame = System.currentTimeMillis()
     }
